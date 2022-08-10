@@ -1,5 +1,8 @@
-Démo Génération du code avec maven:
-https://www.youtube.com/watch?v=__QxqLGVDbg&t=502s
+What is jOOQ? | When to use jOOQ : https://www.youtube.com/watch?v=Y8koEetoqIA
+
+Démo Génération du code avec maven : https://www.youtube.com/watch?v=__QxqLGVDbg&t=502s
+
+jOOQ: Get Back In Control of Your SQL : https://www.youtube.com/watch?v=knTwEqv2OXI&t=4475s
 
 ## Démarrer le conteneur avec la base postgresql sakilapg:
 

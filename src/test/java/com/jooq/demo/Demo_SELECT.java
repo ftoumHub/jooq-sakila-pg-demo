@@ -1,5 +1,7 @@
 package com.jooq.demo;
 
+import org.jooq.Record2;
+import org.jooq.Result;
 import org.jooq.sources.tables.Actor;
 import org.jooq.sources.tables.FilmActor;
 import org.junit.jupiter.api.Test;
@@ -15,9 +17,12 @@ public class Demo_SELECT extends Demo {
         final Actor a = ACTOR.as("a");
         final FilmActor fa = FILM_ACTOR.as("fa");
 
-        dsl().select(ACTOR.FIRST_NAME, ACTOR.LAST_NAME)
-                .from(ACTOR)
-                .fetch();
+        Result<Record2<String, String>> r =
+                dsl().select(ACTOR.FIRST_NAME, ACTOR.LAST_NAME)
+                        .from(ACTOR)
+                        .where(ACTOR.LAST_NAME.like("A%"))
+                        .orderBy(ACTOR.FIRST_NAME.asc())
+                        .fetch();
     }
 
     @Test
@@ -47,7 +52,7 @@ public class Demo_SELECT extends Demo {
                 .where(
                         row(CUSTOMER.FIRST_NAME, CUSTOMER.LAST_NAME)
                                 .in(select(ACTOR.FIRST_NAME, ACTOR.LAST_NAME)
-                                .from(ACTOR))
+                                        .from(ACTOR))
                 )
                 .fetch();
     }
