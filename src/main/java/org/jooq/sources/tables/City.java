@@ -7,15 +7,19 @@ package org.jooq.sources.tables;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Function;
 
 import org.jooq.Field;
 import org.jooq.ForeignKey;
+import org.jooq.Function4;
 import org.jooq.Identity;
 import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
+import org.jooq.Records;
 import org.jooq.Row4;
 import org.jooq.Schema;
+import org.jooq.SelectField;
 import org.jooq.Table;
 import org.jooq.TableField;
 import org.jooq.TableOptions;
@@ -130,6 +134,9 @@ public class City extends TableImpl<CityRecord> {
 
     private transient Country _country;
 
+    /**
+     * Get the implicit join path to the <code>public.country</code> table.
+     */
     public Country country() {
         if (_country == null)
             _country = new Country(this, Keys.CITY__CITY_COUNTRY_ID_FKEY);
@@ -145,6 +152,11 @@ public class City extends TableImpl<CityRecord> {
     @Override
     public City as(Name alias) {
         return new City(alias, this);
+    }
+
+    @Override
+    public City as(Table<?> alias) {
+        return new City(alias.getQualifiedName(), this);
     }
 
     /**
@@ -163,6 +175,14 @@ public class City extends TableImpl<CityRecord> {
         return new City(name, null);
     }
 
+    /**
+     * Rename this table
+     */
+    @Override
+    public City rename(Table<?> name) {
+        return new City(name.getQualifiedName(), null);
+    }
+
     // -------------------------------------------------------------------------
     // Row4 type methods
     // -------------------------------------------------------------------------
@@ -170,5 +190,19 @@ public class City extends TableImpl<CityRecord> {
     @Override
     public Row4<Integer, String, Short, LocalDateTime> fieldsRow() {
         return (Row4) super.fieldsRow();
+    }
+
+    /**
+     * Convenience mapping calling {@link #convertFrom(Function)}.
+     */
+    public <U> SelectField<U> mapping(Function4<? super Integer, ? super String, ? super Short, ? super LocalDateTime, ? extends U> from) {
+        return convertFrom(Records.mapping(from));
+    }
+
+    /**
+     * Convenience mapping calling {@link #convertFrom(Class, Function)}.
+     */
+    public <U> SelectField<U> mapping(Class<U> toType, Function4<? super Integer, ? super String, ? super Short, ? super LocalDateTime, ? extends U> from) {
+        return convertFrom(toType, Records.mapping(from));
     }
 }

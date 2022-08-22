@@ -11,15 +11,15 @@
 
     <properties>
         <hickari.version>2.7.4</hickari.version>
-        <jooq.version>3.15.3</jooq.version>
+        <jooq.version>3.17.1</jooq.version>
         <junit.jupiter.version>5.3.2</junit.jupiter.version>
         <liquibase.version>3.8.4</liquibase.version>
         <postgresql.version>42.1.4</postgresql.version>
         <lombok.version>1.18.20</lombok.version>
         <slf4j.version>1.7.25</slf4j.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.source>11</maven.compiler.source>
-        <maven.compiler.target>11</maven.compiler.target>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
     </properties>
 
     <dependencies>

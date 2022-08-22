@@ -7,15 +7,19 @@ package org.jooq.sources.tables;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Function;
 
 import org.jooq.Field;
 import org.jooq.ForeignKey;
+import org.jooq.Function4;
 import org.jooq.Identity;
 import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
+import org.jooq.Records;
 import org.jooq.Row4;
 import org.jooq.Schema;
+import org.jooq.SelectField;
 import org.jooq.Table;
 import org.jooq.TableField;
 import org.jooq.TableOptions;
@@ -131,6 +135,9 @@ public class Store extends TableImpl<StoreRecord> {
     private transient Staff _staff;
     private transient Address _address;
 
+    /**
+     * Get the implicit join path to the <code>public.staff</code> table.
+     */
     public Staff staff() {
         if (_staff == null)
             _staff = new Staff(this, Keys.STORE__STORE_MANAGER_STAFF_ID_FKEY);
@@ -138,6 +145,9 @@ public class Store extends TableImpl<StoreRecord> {
         return _staff;
     }
 
+    /**
+     * Get the implicit join path to the <code>public.address</code> table.
+     */
     public Address address() {
         if (_address == null)
             _address = new Address(this, Keys.STORE__STORE_ADDRESS_ID_FKEY);
@@ -153,6 +163,11 @@ public class Store extends TableImpl<StoreRecord> {
     @Override
     public Store as(Name alias) {
         return new Store(alias, this);
+    }
+
+    @Override
+    public Store as(Table<?> alias) {
+        return new Store(alias.getQualifiedName(), this);
     }
 
     /**
@@ -171,6 +186,14 @@ public class Store extends TableImpl<StoreRecord> {
         return new Store(name, null);
     }
 
+    /**
+     * Rename this table
+     */
+    @Override
+    public Store rename(Table<?> name) {
+        return new Store(name.getQualifiedName(), null);
+    }
+
     // -------------------------------------------------------------------------
     // Row4 type methods
     // -------------------------------------------------------------------------
@@ -178,5 +201,19 @@ public class Store extends TableImpl<StoreRecord> {
     @Override
     public Row4<Integer, Short, Short, LocalDateTime> fieldsRow() {
         return (Row4) super.fieldsRow();
+    }
+
+    /**
+     * Convenience mapping calling {@link #convertFrom(Function)}.
+     */
+    public <U> SelectField<U> mapping(Function4<? super Integer, ? super Short, ? super Short, ? super LocalDateTime, ? extends U> from) {
+        return convertFrom(Records.mapping(from));
+    }
+
+    /**
+     * Convenience mapping calling {@link #convertFrom(Class, Function)}.
+     */
+    public <U> SelectField<U> mapping(Class<U> toType, Function4<? super Integer, ? super Short, ? super Short, ? super LocalDateTime, ? extends U> from) {
+        return convertFrom(toType, Records.mapping(from));
     }
 }

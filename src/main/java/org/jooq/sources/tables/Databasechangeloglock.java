@@ -5,13 +5,17 @@ package org.jooq.sources.tables;
 
 
 import java.time.LocalDateTime;
+import java.util.function.Function;
 
 import org.jooq.Field;
 import org.jooq.ForeignKey;
+import org.jooq.Function4;
 import org.jooq.Name;
 import org.jooq.Record;
+import org.jooq.Records;
 import org.jooq.Row4;
 import org.jooq.Schema;
+import org.jooq.SelectField;
 import org.jooq.Table;
 import org.jooq.TableField;
 import org.jooq.TableOptions;
@@ -120,6 +124,11 @@ public class Databasechangeloglock extends TableImpl<DatabasechangeloglockRecord
         return new Databasechangeloglock(alias, this);
     }
 
+    @Override
+    public Databasechangeloglock as(Table<?> alias) {
+        return new Databasechangeloglock(alias.getQualifiedName(), this);
+    }
+
     /**
      * Rename this table
      */
@@ -136,6 +145,14 @@ public class Databasechangeloglock extends TableImpl<DatabasechangeloglockRecord
         return new Databasechangeloglock(name, null);
     }
 
+    /**
+     * Rename this table
+     */
+    @Override
+    public Databasechangeloglock rename(Table<?> name) {
+        return new Databasechangeloglock(name.getQualifiedName(), null);
+    }
+
     // -------------------------------------------------------------------------
     // Row4 type methods
     // -------------------------------------------------------------------------
@@ -143,5 +160,19 @@ public class Databasechangeloglock extends TableImpl<DatabasechangeloglockRecord
     @Override
     public Row4<Integer, Boolean, LocalDateTime, String> fieldsRow() {
         return (Row4) super.fieldsRow();
+    }
+
+    /**
+     * Convenience mapping calling {@link #convertFrom(Function)}.
+     */
+    public <U> SelectField<U> mapping(Function4<? super Integer, ? super Boolean, ? super LocalDateTime, ? super String, ? extends U> from) {
+        return convertFrom(Records.mapping(from));
+    }
+
+    /**
+     * Convenience mapping calling {@link #convertFrom(Class, Function)}.
+     */
+    public <U> SelectField<U> mapping(Class<U> toType, Function4<? super Integer, ? super Boolean, ? super LocalDateTime, ? super String, ? extends U> from) {
+        return convertFrom(toType, Records.mapping(from));
     }
 }

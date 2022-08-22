@@ -7,15 +7,19 @@ package org.jooq.sources.tables;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Function;
 
 import org.jooq.Field;
 import org.jooq.ForeignKey;
+import org.jooq.Function4;
 import org.jooq.Identity;
 import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
+import org.jooq.Records;
 import org.jooq.Row4;
 import org.jooq.Schema;
+import org.jooq.SelectField;
 import org.jooq.Table;
 import org.jooq.TableField;
 import org.jooq.TableOptions;
@@ -131,6 +135,9 @@ public class Inventory extends TableImpl<InventoryRecord> {
     private transient Film _film;
     private transient Store _store;
 
+    /**
+     * Get the implicit join path to the <code>public.film</code> table.
+     */
     public Film film() {
         if (_film == null)
             _film = new Film(this, Keys.INVENTORY__INVENTORY_FILM_ID_FKEY);
@@ -138,6 +145,9 @@ public class Inventory extends TableImpl<InventoryRecord> {
         return _film;
     }
 
+    /**
+     * Get the implicit join path to the <code>public.store</code> table.
+     */
     public Store store() {
         if (_store == null)
             _store = new Store(this, Keys.INVENTORY__INVENTORY_STORE_ID_FKEY);
@@ -153,6 +163,11 @@ public class Inventory extends TableImpl<InventoryRecord> {
     @Override
     public Inventory as(Name alias) {
         return new Inventory(alias, this);
+    }
+
+    @Override
+    public Inventory as(Table<?> alias) {
+        return new Inventory(alias.getQualifiedName(), this);
     }
 
     /**
@@ -171,6 +186,14 @@ public class Inventory extends TableImpl<InventoryRecord> {
         return new Inventory(name, null);
     }
 
+    /**
+     * Rename this table
+     */
+    @Override
+    public Inventory rename(Table<?> name) {
+        return new Inventory(name.getQualifiedName(), null);
+    }
+
     // -------------------------------------------------------------------------
     // Row4 type methods
     // -------------------------------------------------------------------------
@@ -178,5 +201,19 @@ public class Inventory extends TableImpl<InventoryRecord> {
     @Override
     public Row4<Integer, Short, Short, LocalDateTime> fieldsRow() {
         return (Row4) super.fieldsRow();
+    }
+
+    /**
+     * Convenience mapping calling {@link #convertFrom(Function)}.
+     */
+    public <U> SelectField<U> mapping(Function4<? super Integer, ? super Short, ? super Short, ? super LocalDateTime, ? extends U> from) {
+        return convertFrom(Records.mapping(from));
+    }
+
+    /**
+     * Convenience mapping calling {@link #convertFrom(Class, Function)}.
+     */
+    public <U> SelectField<U> mapping(Class<U> toType, Function4<? super Integer, ? super Short, ? super Short, ? super LocalDateTime, ? extends U> from) {
+        return convertFrom(toType, Records.mapping(from));
     }
 }
